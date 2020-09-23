@@ -50,13 +50,40 @@ function createCard(data, index) {
 	card.addEventListener('click', () => card.classList.toggle('show-answer'));
 	//add to DOM cards
 	cardsEl.push(card);
-  cardsContainer.appendChild(card);
-  updateCurrentText()
+	cardsContainer.appendChild(card);
+	updateCurrentText();
 }
 
 //shoe numer of cards
-function updateCurrentText(){
-  currentEl.innerText = `${currentActiveCard + 1}/${cardsEl.length}`
+function updateCurrentText() {
+	currentEl.innerText = `${currentActiveCard + 1}/${cardsEl.length}`;
 }
 
 createCards();
+
+//event listeneers
+//className overrides classes, not just adds
+nextBtn.addEventListener('click', () => {
+  cardsEl[currentActiveCard].className = 'card left'
+
+  currentActiveCard = currentActiveCard + 1
+
+  if(currentActiveCard > cardsEl.length - 1){
+    currentActiveCard = cardsEl.length - 1
+  }
+
+  cardsEl[currentActiveCard].className = 'card active'
+  updateCurrentText()
+});
+
+prevBtn.addEventListener('click', () => {
+  cardsEl[currentActiveCard].className = 'card right'
+  currentActiveCard = currentActiveCard - 1
+
+  if(currentActiveCard < 0){
+    currentActiveCard = 0
+  }
+
+  cardsEl[currentActiveCard].className = 'card active'
+  updateCurrentText()
+});
