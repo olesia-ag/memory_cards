@@ -75,9 +75,7 @@ createCards();
 //next btn
 nextBtn.addEventListener('click', () => {
 	cardsEl[currentActiveCard].className = 'card left';
-
 	currentActiveCard = currentActiveCard + 1;
-
 	if (currentActiveCard > cardsEl.length - 1) {
 		currentActiveCard = cardsEl.length - 1;
 	}
@@ -112,10 +110,33 @@ addCardBtn.addEventListener('click', () => {
 	if (question.trim() && answer.trim()) {
 		const newCard = { question, answer };
 		createCard(newCard);
+
+        //analytics.js 
+        analytics.track('New Card Added', newCard);
+
 		questionEl.value = '';
 		answerEl.value = '';
 		addContainer.classList.remove('show');
 		cardsData.push(newCard);
 		setCardsData(cardsData);
 	}
+    var card = {
+        question: question,
+        answer: answer
+    }
+
 });
+
+
+//clear cards
+
+clearBtn.addEventListener('click', () =>{
+    localStorage.clear()
+    cardsContainer.innerHTML=''
+    //analytics.js
+    analytics.track('Cards Cleared');
+    window.location.reload()
+    
+})
+
+
