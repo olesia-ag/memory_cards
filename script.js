@@ -5,7 +5,7 @@ const currentEl = document.getElementById('current');
 const showBtn = document.getElementById('show');
 const hideBtn = document.getElementById('hide');
 const questionEl = document.getElementById('question');
-const answerEl = document.getElementById('question');
+const answerEl = document.getElementById('answer');
 const addCardBtn = document.getElementById('add-card');
 const clearBtn = document.getElementById('clear');
 const addContainer = document.getElementById('add-container');
@@ -17,11 +17,7 @@ let currentActiveCard = 0;
 const cardsEl = [];
 
 //store card data
-const cardsData = [
-	{ question: 'what must a variable begin with?', answer: 'A letter, $ ot _' },
-	{ question: 'what is a variable', answer: 'container for a piece of data' },
-	{ question: 'example of case sensitive variable', answer: 'thisIsAVariable' },
-];
+const cardsData = getCardsData();
 
 //create all cards
 function createCards() {
@@ -59,31 +55,67 @@ function updateCurrentText() {
 	currentEl.innerText = `${currentActiveCard + 1}/${cardsEl.length}`;
 }
 
+//get cards from local storage
+function getCardsData() {
+	const cards = JSON.parse(localStorage.getItem('cards'));
+	return cards === null ? [] : cards;
+}
+
+//add card to local storage
+
+function setCardsData(cards) {
+	localStorage.setItem('cards', JSON.stringify(cards));
+	window.location.reload();
+}
+
 createCards();
 
 //event listeneers
 //className overrides classes, not just adds
+//next btn
 nextBtn.addEventListener('click', () => {
-  cardsEl[currentActiveCard].className = 'card left'
+	cardsEl[currentActiveCard].className = 'card left';
 
-  currentActiveCard = currentActiveCard + 1
+	currentActiveCard = currentActiveCard + 1;
 
-  if(currentActiveCard > cardsEl.length - 1){
-    currentActiveCard = cardsEl.length - 1
-  }
+	if (currentActiveCard > cardsEl.length - 1) {
+		currentActiveCard = cardsEl.length - 1;
+	}
 
-  cardsEl[currentActiveCard].className = 'card active'
-  updateCurrentText()
+	cardsEl[currentActiveCard].className = 'card active';
+	updateCurrentText();
+});
+//prev btn
+prevBtn.addEventListener('click', () => {
+	cardsEl[currentActiveCard].className = 'card right';
+	currentActiveCard = currentActiveCard - 1;
+
+	if (currentActiveCard < 0) {
+		currentActiveCard = 0;
+	}
+
+	cardsEl[currentActiveCard].className = 'card active';
+	updateCurrentText();
 });
 
-prevBtn.addEventListener('click', () => {
-  cardsEl[currentActiveCard].className = 'card right'
-  currentActiveCard = currentActiveCard - 1
+//Show add container
+showBtn.addEventListener('click', () => addContainer.classList.add('show'));
 
-  if(currentActiveCard < 0){
-    currentActiveCard = 0
-  }
+//Hide add container
+hideBtn.addEventListener('click', () => addContainer.classList.remove('show'));
 
-  cardsEl[currentActiveCard].className = 'card active'
-  updateCurrentText()
+//add new card
+addCardBtn.addEventListener('click', () => {
+	const question = questionEl.value;
+	const answer = answerEl.value;
+	console.log(question, answer);
+	if (question.trim() && answer.trim()) {
+		const newCard = { question, answer };
+		createCard(newCard);
+		questionEl.value = '';
+		answerEl.value = '';
+		addContainer.classList.remove('show');
+		cardsData.push(newCard);
+		setCardsData(cardsData);
+	}
 });
